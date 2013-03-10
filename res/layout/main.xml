@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+<TextView
+    android:id="@+id/text"
+    style="@style/TextFont"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="3.34"
+    android:text="@string/hello" />
+	
+	<Button
+	    android:id="@+id/button2"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="0.97"
+	    android:text="Quiz Statistics" />
+	    
+	<View
+	  android:layout_width="1dp"
+	  android:layout_height="40dp">
+	</View>
+	
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_default_normal_blue"
+        android:text="Take the Quiz"
+        android:layout_weight="1" />
+
+    <View
+	  android:layout_width="1dp"
+	  android:layout_height="40dp">
+	</View>
+    
+</LinearLayout>
