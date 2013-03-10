@@ -81,7 +81,7 @@ public class NextActivity  extends Activity {
 	{
 		final TextView tv = (TextView)this.findViewById(R.id.textView1);
 		questionNumber = rand.nextInt(2); //later, make this a random number from 0-7
-		questionNumber = 4;
+		questionNumber = 6;
 		ArrayList<String>answers = new ArrayList<String>();
         tv.setText("");
         db = new DbAdapter(this);
@@ -294,6 +294,54 @@ public class NextActivity  extends Activity {
         		System.out.println("test5");
         		System.err.println(correctAnswer);
         		answers.add(correctAnswer);
+        		break;
+        	case 5: //who directed the star X?
+        		ArrayList<String>potentialDirectors = new ArrayList<String>();
+        		break;
+        		
+        	case 6: //who DIDN'T direct the star X?
+        		potentialDirectors = new ArrayList<String>();
+        		potentialActors = new ArrayList<String>();
+        		cur.moveToFirst();
+        		while(!cur.isAfterLast())
+        		{
+        			if (cur.getInt(0) > 3) //if the actor has been directed 3 times
+        			{
+        				potentialActors.add(cur.getString(1) + "-" + cur.getString(2));
+        			}
+        			potentialDirectors.add(cur.getString(3)); //holds every director
+        			cur.moveToNext();
+        		}
+        		String[] splitActor = potentialActors.get(rand.nextInt(potentialActors.size())).split("-");
+        		question = "Who did NOT direct the star " + splitActor[0] + " " + splitActor[1] + "?";
+        		tv.setText(question);
+        		System.out.println(splitActor[0] + " " + splitActor[1]);
+        		cur2 = db.getDirectors(splitActor[0], splitActor[1]);
+        		cur2.moveToFirst();
+        		while (getWrongAnswers)
+        		{
+        			cur2.moveToPosition(rand.nextInt(cur2.getCount()));
+        			String temp = cur2.getString(0);
+        			if (!answers.contains(temp))
+        			{
+        				answers.add(cur2.getString(0));//add a director who did direct the star
+        			}
+        			if (answers.size()>=3)
+        			{
+        				getWrongAnswers = false;
+        			}
+        		}
+        		while (!cur2.isAfterLast())
+        		{
+        			if (potentialDirectors.contains(cur2.getString(0)))
+        			{
+        				potentialDirectors.remove(cur2.getString(0)); // remove the director from our list of possible correct answers
+        			}
+        			cur2.moveToNext();
+        		}
+        		correctAnswer = potentialDirectors.get(rand.nextInt(potentialDirectors.size()));
+        		answers.add(correctAnswer);
+        		System.err.println(correctAnswer);
         		break;
             default:
             	correctAnswer = "";

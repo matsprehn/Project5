@@ -116,6 +116,13 @@ public class DbAdapter extends SQLiteOpenHelper{
 	{
 		return mDb.query("stars", new String[] {"first_name,last_name"}, null, null, null, null, null);
 	}
+	public Cursor getDirectors(String fname, String lname)
+	{
+		return mDb.rawQuery("select movies.director " +
+						"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
+						"join stars on stars_in_movies.star_id = stars.id " +
+						"WHERE stars.first_name = '" + fname + "' AND stars.last_name ='" + lname + "'", null);
+	}
 	public Cursor pickQuestion(int pick)
 	{
 		Cursor cur;
@@ -150,6 +157,12 @@ public class DbAdapter extends SQLiteOpenHelper{
 			case 5:
 				break;
 			case 6:
+				cur = mDb.rawQuery("select count(a.last_name), a.first_name, a.last_name, a.director from " +
+								"(select DISTINCT movies.director, stars.first_name, stars.last_name " +
+								"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
+								"join stars on stars.id = stars_in_movies.star_id " +
+								"order by stars.last_name)as a " +
+								"group by a.last_name", null);
 				break;
 			case 7:
 				break;
