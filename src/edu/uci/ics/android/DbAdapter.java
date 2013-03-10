@@ -148,15 +148,18 @@ public class DbAdapter extends SQLiteOpenHelper{
 						"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
 						"join stars on stars_in_movies.star_id = stars.id ", null);
 				break;
-			case 4: 
+			case 4: //who DIDN't appear in the movie X?
 				cur = mDb.rawQuery("select count(movies.title), movies.title, stars.first_name, stars.last_name " +
 						"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
 						"join stars on stars_in_movies.star_id = stars.id " +
 						"group by movies.title", null);
 				break;
-			case 5:
+			case 5: // who directed the star X?
+				cur = mDb.rawQuery("select movies.director, stars.first_name, stars.last_name " +
+									"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
+									"join stars on stars.id = stars_in_movies.star_id " , null);
 				break;
-			case 6:
+			case 6: // who DIDN'T direct the star X?
 				cur = mDb.rawQuery("select count(a.last_name), a.first_name, a.last_name, a.director from " +
 								"(select DISTINCT movies.director, stars.first_name, stars.last_name " +
 								"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
@@ -164,7 +167,15 @@ public class DbAdapter extends SQLiteOpenHelper{
 								"order by stars.last_name)as a " +
 								"group by a.last_name", null);
 				break;
-			case 7:
+			case 7: // which star appears in both the movie X and the movie Y?
+				//note: notice the lack of distinct in this query. This is to grab actors who have appeared in
+				//more than one film
+				cur = mDb.rawQuery("select count(a.last_name), a.first_name, a.last_name, a.director from " +
+						"(select movies.director, stars.first_name, stars.last_name " +
+						"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
+						"join stars on stars.id = stars_in_movies.star_id " +
+						"order by stars.last_name)as a " +
+						"group by a.last_name", null);
 				break;
 			case 8:
 				break;
