@@ -29,7 +29,7 @@ public class NextActivity  extends Activity {
 	private long mStart;
 	private long mPause = 0;
 	private boolean getWrongAnswers = true;
-	private static long duration = 3000;//180000;
+	private static long duration = 180000;
 	private Random rand = new Random();
 	private int questionNumber; // used to generate a question number 0-7 to pick what question we ask
 	long elapsed = duration;
@@ -81,6 +81,7 @@ public class NextActivity  extends Activity {
 	{
 		final TextView tv = (TextView)this.findViewById(R.id.textView1);
 		questionNumber = rand.nextInt(2); //later, make this a random number from 0-7
+		questionNumber = 4;
 		ArrayList<String>answers = new ArrayList<String>();
         tv.setText("");
         db = new DbAdapter(this);
@@ -92,7 +93,7 @@ public class NextActivity  extends Activity {
         cur.moveToPosition(index);
         String question = "";
         switch (questionNumber){
-        	case 0:
+        	case 0://who directed the movie Y?
 	            question = "Who directed the movie " + cur.getString(0)  + "?";
 	            tv.setText(question);
 	            correctAnswer = cur.getString(1);
@@ -114,7 +115,7 @@ public class NextActivity  extends Activity {
 	            	}
 	            }
 	            break;
-        	case 1:
+        	case 1: // when was the movie X released?
         		question = "When was the movie " + cur.getString(0)  + " released?";
 	            tv.setText(question);
 	            correctAnswer = cur.getString(1);
@@ -137,7 +138,7 @@ public class NextActivity  extends Activity {
 	            }
         		break;
 
-        	case 2:
+        	case 2://in which movie did the stars X and Y star in together?
         		cur.moveToFirst();
         		ArrayList<String> movies = new ArrayList<String>();//contains all movies
         		ArrayList<String> potentialMovies = new ArrayList<String>();//contains all movies with at least 2 stars
@@ -193,51 +194,31 @@ public class NextActivity  extends Activity {
 	            }
         		
         		break;
-        	case 3:
+        	case 3://who starred in the movie X?
+        		
+        		correctAnswer = cur.getString(1) + " " + cur.getString(2);
+        		answers.add(correctAnswer);
+        		String movie = cur.getString(0);
+        		ArrayList<String>potentialActors = new ArrayList<String>();
+        		actors = new ArrayList<String>();
         		cur.moveToFirst();
-        		movies = new ArrayList<String>();//contains all movies
-        		potentialMovies = new ArrayList<String>();//contains all movies with at least 2 stars
         		while (!cur.isAfterLast())
         		{
-        			if (!movies.contains(cur.getString(1)))
-        			{
-        				movies.add(cur.getString(1));//grab every movie
-        			}
-        			//System.out.println(Integer.valueOf(cur.getString(0)));
-        			if (Integer.valueOf(cur.getString(0)) > 2 && !potentialMovies.contains(cur.getString(1)))
-        			{
-        				potentialMovies.add(cur.getString(1)); //grab every movie that has two actors
-        			}
-        			
-        			cur.moveToNext();
+        				if (movie.equals(cur.getString(0)) && !correctAnswer.equals(cur.getString(1) + " " + cur.getString(2))
+        						&& !potentialActors.contains(cur.getString(1) + " " + cur.getString(2)))
+        				{
+        					potentialActors.add(cur.getString(1) + " " + cur.getString(2));//get actors who also starred in the movie
+        				}
+        				else if (!correctAnswer.equals(cur.getString(1) + " " + cur.getString(2)) && !potentialActors.contains(cur.getString(1) + " " + cur.getString(2)) 
+        						&& !actors.contains(cur.getString(1) + " " + cur.getString(2)))
+        				{
+        					actors.add(cur.getString(1) + " " + cur.getString(2));//get actors who didnt star in the movie
+        				}
+        				cur.moveToNext();
         		}
-        		
-        		correctAnswer = potentialMovies.get(rand.nextInt(potentialMovies.size())); // pick a random movie that has at least two actors
-        		
-        		movies.remove(correctAnswer); //remove the right answer from our collection
-        		actors = new ArrayList<String>();
-        		System.err.println(correctAnswer);
-        		cur2 = db.getActors(correctAnswer);
-        		cur2.moveToFirst();
-        		while (!cur2.isAfterLast())
-        		{
-        			actors.add(cur2.getString(0) + " " + cur2.getString(1));
-        			cur2.moveToNext();
-        		}
-        		
-        		actor1 = actors.get(rand.nextInt(actors.size()));
-        		
-        		actors.remove(actor1);
-        		actor2 = actors.get(rand.nextInt(actors.size()));
-        		
-        		question = "In Which Movie did the stars " + actor1 + " and " + actor2 + " NOT appear together?";
-        		tv.setText(question);
-        		answers.add(correctAnswer);
-        		cur.moveToFirst();
-        		
         		while (getWrongAnswers)
 	            {
-	            	String temp = movies.get(rand.nextInt(movies.size()));
+	            	String temp = actors.get(rand.nextInt(actors.size()));
 	            	if (!answers.contains(temp)) //if the answer is different than the correct answer (i.e. incorrect answer)
 	            	{
 	            		answers.add(temp); //add it to our list of possible answers
@@ -248,6 +229,71 @@ public class NextActivity  extends Activity {
 	            	}
 	            }
         		
+
+        		System.err.println(correctAnswer);
+        		
+        		question = "Who starred in the movie " + movie + "?";
+        		tv.setText(question);
+        		cur.moveToFirst();
+        		
+
+        		
+        		break;
+        	case 4: //who DIDN'T Appear in film X?
+        		cur.moveToFirst();
+        		potentialMovies = new ArrayList<String>();//contains all movies with at least 3 stars
+        		potentialActors = new ArrayList<String>();//all the actors who starred in the movie we pick
+        		while (!cur.isAfterLast())
+        		{
+        			//System.out.println(Integer.valueOf(cur.getString(0)));
+        			if (Integer.valueOf(cur.getString(0)) > 2 && !potentialMovies.contains(cur.getString(1)))
+        			{
+        				potentialMovies.add(cur.getString(1)); //grab every movie that has three actors
+        			}
+        			
+        			cur.moveToNext();
+        		}
+        		System.out.println("test1");
+        		movie = potentialMovies.get(rand.nextInt(potentialMovies.size()));
+        		question = "Who did NOT appear in the movie " + movie + "?";
+        		tv.setText(question);
+        		cur2 = db.getActors(movie);
+        		System.out.println("test2");
+        		while (getWrongAnswers)
+	            {
+        			cur2.moveToPosition(rand.nextInt(cur2.getCount()));
+	            	String temp = cur2.getString(0) + " " + cur2.getString(1);
+	            	if (!answers.contains(temp)) //if the answer is different than the correct answer (i.e. incorrect answer)
+	            	{
+	            		answers.add(temp); //add it to our list of possible answers
+	            	}
+	            	if (answers.size() >= 3) //if we have 3 answers
+	            	{
+	            		getWrongAnswers = false;
+	            	}
+	            }
+        		System.out.println("test3");
+        		cur2.moveToFirst();
+        		while (!cur2.isAfterLast())
+        		{
+        			potentialActors.add(cur2.getString(0) + " " + cur2.getString(1));
+        			cur2.moveToNext();
+        		}
+        		System.out.println("test4");
+        		Cursor cur3 = db.getActors();
+        		boolean getRightAnswer = true;
+        		while (getRightAnswer)
+        		{
+        			cur3.moveToPosition(rand.nextInt(cur3.getCount()));
+        			if (!potentialActors.contains(cur3.getString(0) + " " + cur3.getString(1)))
+        			{
+        				correctAnswer = cur3.getString(0) + " " + cur3.getString(1);
+        				getRightAnswer = false;
+        			}
+        		}
+        		System.out.println("test5");
+        		System.err.println(correctAnswer);
+        		answers.add(correctAnswer);
         		break;
             default:
             	correctAnswer = "";

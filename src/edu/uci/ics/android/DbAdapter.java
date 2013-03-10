@@ -112,14 +112,9 @@ public class DbAdapter extends SQLiteOpenHelper{
 						"WHERE movies.title ='" + movie + "'", null);
 		return cur;
 	}
-	public Cursor moviesWithActors(String actor1, String actor2)
-	
-	{	Cursor cur;
-		cur =  mDb.rawQuery("select count(movies.title), movies.title, stars.first_name, stars.last_name " +
-			"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
-			"join stars on stars_in_movies.star_id = stars.id " +
-			"group by movies.title", null);
-		return cur;
+	public Cursor getActors()
+	{
+		return mDb.query("stars", new String[] {"first_name,last_name"}, null, null, null, null, null);
 	}
 	public Cursor pickQuestion(int pick)
 	{
@@ -129,21 +124,28 @@ public class DbAdapter extends SQLiteOpenHelper{
 		cur = mDb.query("movies", new String[] {"*"}, null, null, null, null, null);
 		switch(pick)
 		{
-			case 0:
+			case 0: // who directed movie X?
 				cur = mDb.query("movies", new String[] {"title,director"}, null, null, null, null, null);
 				break;
-			case 1:
+			case 1: //what year was movie X shot?
 				cur = mDb.query("movies", new String[] {"title,year"}, null, null, null, null, null);
 				break;
-			case 2:
+			case 2://in which movie did star X and star Y appear together? 
 				cur = mDb.rawQuery("select count(movies.title), movies.title, stars.first_name, stars.last_name " +
 						"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
 						"join stars on stars_in_movies.star_id = stars.id " +
 						"group by movies.title", null);
 				break;
-			case 3:
+			case 3: //Who appeared in movie X?
+				cur = mDb.rawQuery("select movies.title, stars.first_name, stars.last_name " +
+						"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
+						"join stars on stars_in_movies.star_id = stars.id ", null);
 				break;
-			case 4:
+			case 4: 
+				cur = mDb.rawQuery("select count(movies.title), movies.title, stars.first_name, stars.last_name " +
+						"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
+						"join stars on stars_in_movies.star_id = stars.id " +
+						"group by movies.title", null);
 				break;
 			case 5:
 				break;
