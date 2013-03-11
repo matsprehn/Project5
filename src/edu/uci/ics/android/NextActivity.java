@@ -69,7 +69,12 @@ public class NextActivity  extends Activity {
 					intent.putExtra("numCorrect", numOfCorrectAnswers);
 					intent.putExtra("totalQuestions", totalNumOfQuestions);
 					intent.putExtra("totalTime", duration);
-					intent.putExtra("timePerQuestion", duration / totalNumOfQuestions);
+//					if(totalNumOfQuestions == 0){
+//						intent.putExtra("timePerQuestion", duration);
+//					}
+//					else{
+//						intent.putExtra("timePerQuestion", duration / totalNumOfQuestions);
+//					}
 					//TODO: need to add timePerQuestion
 					startActivity(intent);
 					finish();

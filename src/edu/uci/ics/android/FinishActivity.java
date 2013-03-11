@@ -51,6 +51,7 @@ public class FinishActivity extends Activity {
 		this.incorrect.setText("Number incorrect: " + newIncorrect);
 		this.totalQuestions.setText("Total questions: " + totalQuestions);
 		
+		//calculate time per question by obtaining total seconds and total decimal seconds
 		Long totalSeconds = (long) 0;
 		Long totalDecimalSeconds = (long) 0;
 		if(getIntent().getExtras().getInt("totalQuestions") != 0){
