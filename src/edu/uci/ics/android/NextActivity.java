@@ -1,4 +1,3 @@
-
 package edu.uci.ics.android;
 
 import android.app.Activity;
@@ -30,7 +29,7 @@ public class NextActivity  extends Activity {
 	private long mStart;
 	private long mPause = 0;
 	private boolean getWrongAnswers = true;
-	private static long duration = 180000;
+	private static long duration = 10000;//180000;
 	private Random rand = new Random();
 	private int questionNumber; // used to generate a question number 0-7 to pick what question we ask
 	long elapsed = duration;
@@ -70,10 +69,11 @@ public class NextActivity  extends Activity {
 					intent.putExtra("numCorrect", numOfCorrectAnswers);
 					intent.putExtra("totalQuestions", totalNumOfQuestions);
 					intent.putExtra("totalTime", duration);
+					intent.putExtra("timePerQuestion", duration / totalNumOfQuestions);
 					//TODO: need to add timePerQuestion
 					startActivity(intent);
 					finish();
-			}
+				}
 			}
 		}	
 	};

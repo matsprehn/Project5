@@ -2,7 +2,9 @@ package edu.uci.ics.android;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,6 +19,7 @@ public class FinishActivity extends Activity {
 	private TextView timePerQuestion;
 	private TextView totalTime;
 	private Button homeButton;
+	private DbAdapter db;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +42,14 @@ public class FinishActivity extends Activity {
 		}
         });
 		
-		this.correct.setText("Number correct: " + getIntent().getExtras().getInt("numCorrect"));
-		this.incorrect.setText("Number incorrect: " + getIntent().getExtras().getInt("totalQuestions"));
-		this.totalQuestions.setText("Total questions: " + getIntent().getExtras().getInt("totalQuestions"));
+		int newCorrect = getIntent().getExtras().getInt("numCorrect");
+		int newIncorrect = getIntent().getExtras().getInt("totalQuestions") - getIntent().getExtras().getInt("numCorrect");
+		int totalQuestions = getIntent().getExtras().getInt("totalQuestions");
+
+		//display data
+		this.correct.setText("Number correct: " + newCorrect);
+		this.incorrect.setText("Number incorrect: " + newIncorrect);
+		this.totalQuestions.setText("Total questions: " + totalQuestions);
 		
 		Long totalSeconds = (long) 0;
 		Long totalDecimalSeconds = (long) 0;
@@ -52,7 +60,12 @@ public class FinishActivity extends Activity {
 			totalDecimalSeconds = averageMilliseconds % 1000;
 		}
 		
-		this.timePerQuestion.setText("Time per question: " + totalSeconds + "." + totalDecimalSeconds + " seconds");
+		double timePerQuestion = Double.parseDouble(totalSeconds + "." + totalDecimalSeconds);
+		this.timePerQuestion.setText("Time per question: " + timePerQuestion + " seconds");
 		this.totalTime.setText("Total time: " + (getIntent().getExtras().getLong("totalTime") / 1000) + " seconds");
+		
+		//place data into database
+		db = new DbAdapter(this);
+		db.insertNewStats(newCorrect, newIncorrect, timePerQuestion);
 	}
 }

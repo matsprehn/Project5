@@ -23,6 +23,10 @@
             android:name="edu.uci.ics.android.FinishActivity"
             android:label="@string/title_activity_end_of_quiz" >
         </activity>
+        <activity
+            android:name="edu.uci.ics.android.StatisticsActivity"
+            android:label="@string/title_activity_statistics" >
+        </activity>
     </application>
 
 </manifest>

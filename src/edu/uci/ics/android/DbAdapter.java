@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 import java.util.Random;
 
 public class DbAdapter extends SQLiteOpenHelper{
@@ -35,7 +36,7 @@ public class DbAdapter extends SQLiteOpenHelper{
 		String starTable = "CREATE TABLE stars (ID integer primary key autoincrement, FIRST_NAME text not null, LAST_NAME text not null, DOB numeric not null, PHOTO_URL text);";
 		String starsInMoviesTable = "CREATE TABLE stars_in_movies (STAR_ID integer not null, MOVIE_ID integer not null);";
 		//create a statistics table. quiz_number is number of quizzes taken. CORRECT is a 0 if incorrect, 1 if correct answer. TIME_SPENT is time spent on the question";
-		String statsTable = "CREATE TABLE stats (QUIZ_NUMBER integer, CORRECT integer, TIME_SPENT integer);";
+		String statsTable = "CREATE TABLE stats (CORRECT integer, INCORRECT integer, TOTAL_TIME real);";
 		db.execSQL(movieTable);
 		db.execSQL(starTable);
 		db.execSQL(starsInMoviesTable);
@@ -89,9 +90,9 @@ public class DbAdapter extends SQLiteOpenHelper{
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		db.execSQL("DROP TABLE IF EXISTS "+"movies");
-		db.execSQL("DROP TABLE IF EXISTS "+"stars");
-		db.execSQL("DROP TABLE IF EXISTS "+"stars_in_movies");
+		db.execSQL("DROP TABLE IF EXISTS movies");
+		db.execSQL("DROP TABLE IF EXISTS stars");
+		db.execSQL("DROP TABLE IF EXISTS stars_in_movies");
 		db.execSQL("DROP TABLE IF EXISTS stats");
 		onCreate(db);
 	}
@@ -100,9 +101,7 @@ public class DbAdapter extends SQLiteOpenHelper{
 		//return mDb.query("movies", new String[] {"title"}, null, null, null, null, null);
 		return mDb.query("movies", new String[] {"title,director"}, null, null, null, null, null);
 	}
-	public Cursor getStats(){
-		return mDb.query("statistics", new String[] {"*"}, null, null, null, null, null);
-	}
+	
 	public Cursor getActors(String movie)
 	{
 		//movie = "Ocean's Twelve";
@@ -214,4 +213,76 @@ public class DbAdapter extends SQLiteOpenHelper{
 		return cur;
 	}
 
+	public void insertNewStats(int newCorrect, int newIncorrect, double newTimePerQuestion){
+		ContentValues values = new ContentValues();
+		values.put("CORRECT", newCorrect);
+		values.put("INCORRECT", newIncorrect);
+		values.put("TOTAL_TIME", newTimePerQuestion);
+		mDb.insert("stats", null, values); 
+	}
+	
+	public Cursor getStats(){
+		Cursor cur;
+		cur = mDb.rawQuery("select * from stats", null);
+		//System.err.println(cur.moveToFirst());
+		//cur.moveToFirst();
+//		while (!cur.isAfterLast())
+//		{
+//			//System.out.println(cur.getString(0));
+//			cur.moveToNext();
+//		}
+		return cur;
+	}
+	
+	public int getTotalNumberOfQuizzes(){
+		Cursor cur;
+		cur = mDb.rawQuery("select count(*) from stats", null);
+		cur.moveToFirst();
+		int value = cur.getInt(0);
+		//System.out.println(value);
+		return value;
+	}
+	
+	public void clearScores(){
+		mDb.delete("stats", null, null);
+	}
+	
+	public int getTotalNumberOfCorrect(){
+		Cursor cur;
+		cur = mDb.rawQuery("select stats.correct from stats", null);
+		cur.moveToFirst();
+		int value = 0;
+		while(!cur.isAfterLast()){
+			//System.out.println("correct" + cur.getInt(0));
+			value += cur.getInt(0);
+			cur.moveToNext();
+		}
+		return value;
+	}
+	
+	public int getTotalNumberOfIncorrect(){
+		Cursor cur;
+		cur = mDb.rawQuery("select stats.incorrect from stats", null);
+		cur.moveToFirst();
+		int value = 0;
+		while(!cur.isAfterLast()){
+			//System.out.println("incorrect" + cur.getInt(0));
+			value += cur.getInt(0);
+			cur.moveToNext();
+		}
+		return value;
+	}
+	
+	public double getTotalTime(){
+		Cursor cur;
+		cur = mDb.rawQuery("select stats.total_time from stats", null);
+		cur.moveToFirst();
+		double value = 0;
+		while(!cur.isAfterLast()){
+			value += cur.getDouble(0);
+			cur.moveToNext();
+		}
+		//System.out.println(value);
+		return value;
+	}
 }
