@@ -29,7 +29,7 @@ public class NextActivity  extends Activity {
 	private long mStart;
 	private long mPause = 0;
 	private boolean getWrongAnswers = true;
-	private static long duration = 10000;//180000;
+	private static long duration = 180000;
 	private Random rand = new Random();
 	private int questionNumber; // used to generate a question number 0-7 to pick what question we ask
 	long elapsed = duration;
@@ -81,8 +81,8 @@ public class NextActivity  extends Activity {
 	public void createQuestion(final Bundle savedInstanceState)
 	{
 		final TextView tv = (TextView)this.findViewById(R.id.textView1);
-		questionNumber = rand.nextInt(2); //later, make this a random number from 0-7
-		questionNumber = 9;
+		questionNumber = rand.nextInt(10); //later, make this a random number from 0-7
+		questionNumber = 2;
 		ArrayList<String>answers = new ArrayList<String>();
         tv.setText("");
         db = new DbAdapter(this);

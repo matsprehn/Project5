@@ -145,10 +145,13 @@ public class DbAdapter extends SQLiteOpenHelper{
 				cur = mDb.query("movies", new String[] {"title,year"}, null, null, null, null, null);
 				break;
 			case 2://in which movie did star X and star Y appear together? 
-				cur = mDb.rawQuery("select count(movies.title), movies.title, stars.first_name, stars.last_name " +
-						"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
-						"join stars on stars_in_movies.star_id = stars.id " +
-						"group by movies.title", null);
+				cur = mDb.rawQuery("select count(a.title), a.title, a.first_name, a.last_name from " +
+								"( " +
+								"select DISTINCT movies.title, stars.first_name, stars.last_name " +
+								"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
+								"join stars on stars_in_movies.star_id = stars.id " +
+								") as a " +
+								"group by a.title", null);
 				break;
 			case 3: //Who appeared in movie X?
 				cur = mDb.rawQuery("select movies.title, stars.first_name, stars.last_name " +
