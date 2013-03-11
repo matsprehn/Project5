@@ -34,8 +34,9 @@ public class Demo_3 extends Activity {
         
         this.button2.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		//Intent intent = new Intent(Demo_3.this, Statistics.class);
-        		//startActivity(intent);
+        		Intent intent = new Intent(Demo_3.this, StatisticsActivity.class);
+        		startActivity(intent);
+        		finish();
         	}
         });
         this.button1.setOnClickListener(new OnClickListener() {		

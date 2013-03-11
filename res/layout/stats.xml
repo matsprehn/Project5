@@ -1,15 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent" 
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/quizzesTaken"
+        style="@style/TextFont"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3.30"
+        android:text="Quizzes Taken: no data" />
+    
+    <TextView
+        android:id="@+id/totalCorrect"
+        style="@style/TextFont"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3.31"
+        android:text="Correct: no data" />
+   
+    <TextView
+        android:id="@+id/totalIncorrect"
+        style="@style/TextFont"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3.32"
+        android:text="Incorrect: no data" />
+
+    <TextView
+        android:id="@+id/averageTimePerQuestion"
+        style="@style/TextFont"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3.33"
+        android:text="Avg time per question: no data" />
+    
+    <Button
+        android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="49dp"
-        android:text="TextView" />
-
-</RelativeLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Home" >
+    </Button>
+    <Button
+        android:id="@+id/clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Clear Scores" >
+    </Button>
+    
+</LinearLayout>
