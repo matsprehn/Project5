@@ -105,16 +105,24 @@ public class DbAdapter extends SQLiteOpenHelper{
 	}
 	public Cursor getActors(String movie)
 	{
+		//movie = "Ocean's Twelve";
 		Cursor cur;
 		cur =  mDb.rawQuery("select stars.first_name, stars.last_name " +
 						"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
 						"join stars on stars_in_movies.star_id = stars.id " +
-						"WHERE movies.title ='" + movie + "'", null);
+						"WHERE movies.title ='" + movie.replace("'", "''") + "'", null);
 		return cur;
 	}
 	public Cursor getActors()
 	{
 		return mDb.query("stars", new String[] {"first_name,last_name"}, null, null, null, null, null);
+	}
+	public Cursor getMovies(String fname, String lname)
+	{
+		return mDb.rawQuery("select movies.title " +
+				"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
+				"join stars on stars_in_movies.star_id = stars.id " +
+				"WHERE stars.first_name = '" + fname + "' AND stars.last_name ='" + lname + "'", null);
 	}
 	public Cursor getDirectors(String fname, String lname)
 	{
@@ -177,8 +185,25 @@ public class DbAdapter extends SQLiteOpenHelper{
 						"order by stars.last_name)as a " +
 						"group by a.last_name", null);
 				break;
-			case 8:
+			case 8://Which star did not appear in the same movie with the star X?
+				cur = mDb.rawQuery("select a.count, a.title, a.first_name, a.last_name from " +
+								"( " +
+								"select count(movies.title) as count, movies.title, stars.first_name, stars.last_name " +
+								"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
+								"join stars on stars.id = stars_in_movies.star_id " +
+								"group by movies.title " +
+								")as a " +
+								"where a.count >= 4", null);
+				// which star did not appear the same movie with the star X?
+				/*cur = mDb.rawQuery("select count(a.title),  a.first_name, a.last_name, a.title from " +
+						"(select movies.title, stars.first_name, stars.last_name " +
+						"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
+						"join stars on stars.id = stars_in_movies.star_id " +
+						"order by movies.title)as a " +
+						"group by a.title ", null);*/
+				
 				break;
+			case 9://Who directed the star X in year Y?
 				
 		}
 		return cur;

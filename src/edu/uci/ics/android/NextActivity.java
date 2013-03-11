@@ -1,3 +1,4 @@
+
 package edu.uci.ics.android;
 
 import android.app.Activity;
@@ -81,7 +82,7 @@ public class NextActivity  extends Activity {
 	{
 		final TextView tv = (TextView)this.findViewById(R.id.textView1);
 		questionNumber = rand.nextInt(2); //later, make this a random number from 0-7
-		questionNumber = 7;
+		questionNumber = 8;
 		ArrayList<String>answers = new ArrayList<String>();
         tv.setText("");
         db = new DbAdapter(this);
@@ -253,12 +254,12 @@ public class NextActivity  extends Activity {
         			
         			cur.moveToNext();
         		}
-        		System.out.println("test1");
+        		//System.out.println("test1");
         		movie = potentialMovies.get(rand.nextInt(potentialMovies.size()));
         		question = "Who did NOT appear in the movie " + movie + "?";
         		tv.setText(question);
         		cur2 = db.getActors(movie);
-        		System.out.println("test2");
+        		//System.out.println("test2");
         		while (getWrongAnswers)
 	            {
         			cur2.moveToPosition(rand.nextInt(cur2.getCount()));
@@ -272,14 +273,14 @@ public class NextActivity  extends Activity {
 	            		getWrongAnswers = false;
 	            	}
 	            }
-        		System.out.println("test3");
+        		//System.out.println("test3");
         		cur2.moveToFirst();
         		while (!cur2.isAfterLast())
         		{
         			potentialActors.add(cur2.getString(0) + " " + cur2.getString(1));
         			cur2.moveToNext();
         		}
-        		System.out.println("test4");
+        		//System.out.println("test4");
         		Cursor cur3 = db.getActors();
         		boolean getRightAnswer = true;
         		while (getRightAnswer)
@@ -291,7 +292,7 @@ public class NextActivity  extends Activity {
         				getRightAnswer = false;
         			}
         		}
-        		System.out.println("test5");
+        		//System.out.println("test5");
         		System.err.println(correctAnswer);
         		answers.add(correctAnswer);
         		break;
@@ -334,15 +335,15 @@ public class NextActivity  extends Activity {
         		{
         			if (cur.getInt(0) > 3) //if the actor has been directed 3 times
         			{
-        				potentialActors.add(cur.getString(1) + "-" + cur.getString(2));
+        				potentialActors.add(cur.getString(1) + ";" + cur.getString(2));
         			}
         			potentialDirectors.add(cur.getString(3)); //holds every director
         			cur.moveToNext();
         		}
-        		String[] splitActor = potentialActors.get(rand.nextInt(potentialActors.size())).split("-");
+        		String[] splitActor = potentialActors.get(rand.nextInt(potentialActors.size())).split(";");
         		question = "Who did NOT direct the star " + splitActor[0] + " " + splitActor[1] + "?";
         		tv.setText(question);
-        		System.out.println(splitActor[0] + " " + splitActor[1]);
+        		//System.out.println(splitActor[0] + " " + splitActor[1]);
         		cur2 = db.getDirectors(splitActor[0], splitActor[1]);
         		cur2.moveToFirst();
         		while (getWrongAnswers)
@@ -370,7 +371,7 @@ public class NextActivity  extends Activity {
         		answers.add(correctAnswer);
         		System.err.println(correctAnswer);
         		break;
-        	case 7:
+        	case 7: //which star appears in both movie X and movie Y?
         		String movie1 = "";
 				String movie2 = "";
 				potentialActors = new ArrayList<String>();//actors who have appeared in 2+ films
@@ -423,8 +424,8 @@ public class NextActivity  extends Activity {
 				tv.setText(question);
 				while (getWrongAnswers)
 				{
-					String temp = actors.get(rand.nextInt(movies.size()));
-					actors.remove(temp);
+					String temp = potentialActors.get(rand.nextInt(potentialActors.size()));
+					potentialActors.remove(temp);
 					answers.add(temp);
 					if (answers.size() >= 4)
 					{
@@ -434,6 +435,79 @@ public class NextActivity  extends Activity {
 				
 				System.err.println(correctAnswer);
 				break;
+        	case 8: //which star did not appear in the same movie with the star X?
+        		potentialActors = new ArrayList<String>();//actors who have appeared with our actor
+				actors = new ArrayList<String>();
+				movies = new ArrayList<String>();
+				cur.moveToFirst();
+				System.out.println("test1");
+				while (!cur.isAfterLast())//grab all actors who have at least 2 co-actors
+				{
+					if (cur.getInt(0) > 2) //movie has 3 actors
+					{
+						potentialActors.add(cur.getString(2) +  ";" + cur.getString(3));
+					}
+					cur.moveToNext();
+				}
+				System.out.println("test2");
+				actor1 = potentialActors.get(rand.nextInt(potentialActors.size()));//this is our star X
+				splitActor = actor1.split(";");
+				actor1 = splitActor[0] + " " + splitActor[1];
+				cur2 = db.getMovies(splitActor[0], splitActor[1]); // get all movies this actor has starred in
+				question = "which star did not appear in the same movie with the star " + " " + actor1 + "?";
+				tv.setText(question);
+				System.out.println(actor1);
+				potentialActors = new ArrayList<String>(); //pool of people who starred with our X
+				cur2.moveToFirst();
+				System.out.println("test4");
+				while (!cur2.isAfterLast())
+				{
+					movies.add(cur2.getString(0)); // get all movie X has starred in
+					cur2.moveToNext();
+				}
+				System.out.println("test5");
+        		for (String temp: movies)
+        		{
+        			cur3 = db.getActors(temp);
+        			cur3.moveToFirst();
+        			while (!cur3.isAfterLast())
+        			{
+        				if (!potentialActors.contains(cur3.getString(0) + " " + cur3.getString(1))
+        						&& !actor1.equals(cur3.getString(0) + " " + cur3.getString(1)))
+        				{
+        					potentialActors.add(cur3.getString(0) + " " + cur3.getString(1));
+        				}
+        				cur3.moveToNext();
+        			}
+        		}
+        		System.out.println("test6");
+        		cur3 = db.getActors();
+        		cur3.moveToFirst();
+        		while (!cur3.isAfterLast())
+        		{
+        			if (!potentialActors.contains(cur3.getString(0) + " " + cur3.getString(1)))
+        			{
+        				actors.add(cur3.getString(0) + " " + cur3.getString(1)); //pool of right answers
+        			}
+        			cur3.moveToNext();
+        		}
+        		System.out.println("test7");
+        		correctAnswer = actors.get(rand.nextInt(actors.size()));
+        		answers.add(correctAnswer);
+        		System.out.println("test8");
+        		while (getWrongAnswers)
+        		{
+        			String temp = potentialActors.get(rand.nextInt(potentialActors.size()));
+        			potentialActors.remove(temp);
+        			answers.add(temp);
+        			if (answers.size() >= 4)
+        			{
+        				getWrongAnswers = false;
+        			}
+        		}
+        		System.out.println("test9");
+				System.err.println(correctAnswer);
+        		break;
             default:
             	correctAnswer = "";
             	break;
