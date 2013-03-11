@@ -204,6 +204,11 @@ public class DbAdapter extends SQLiteOpenHelper{
 				
 				break;
 			case 9://Who directed the star X in year Y?
+				cur = mDb.rawQuery("SELECT movies.director, movies.year, movies.title, stars.first_name, stars.last_name " +
+				"FROM movies " +
+				"JOIN stars_in_movies ON movies.id = stars_in_movies.movie_id " +
+				"JOIN stars ON stars.id = stars_in_movies.star_id", null);
+				break;
 				
 		}
 		return cur;

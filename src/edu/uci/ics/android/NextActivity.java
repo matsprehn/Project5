@@ -82,7 +82,7 @@ public class NextActivity  extends Activity {
 	{
 		final TextView tv = (TextView)this.findViewById(R.id.textView1);
 		questionNumber = rand.nextInt(2); //later, make this a random number from 0-7
-		questionNumber = 8;
+		questionNumber = 9;
 		ArrayList<String>answers = new ArrayList<String>();
         tv.setText("");
         db = new DbAdapter(this);
@@ -184,6 +184,7 @@ public class NextActivity  extends Activity {
         		while (getWrongAnswers)
 	            {
 	            	String temp = movies.get(rand.nextInt(movies.size()));
+	            	movies.remove(temp);
 	            	if (!answers.contains(temp)) //if the answer is different than the correct answer (i.e. incorrect answer)
 	            	{
 	            		answers.add(temp); //add it to our list of possible answers
@@ -507,6 +508,53 @@ public class NextActivity  extends Activity {
         		}
         		System.out.println("test9");
 				System.err.println(correctAnswer);
+        		break;
+        	case 9://Who directed the star X in year Y?
+        		actor1 = cur.getString(3) + " " + cur.getString(4);
+        		String year = cur.getString(1);
+        		correctAnswer = cur.getString(0);
+        		answers.add(correctAnswer);
+        		question = "Who directed the star " + actor1 + " in the year " + year + "?";
+        		tv.setText(question);
+        		cur.moveToFirst();
+        		potentialDirectors = new ArrayList<String>();
+        		ArrayList<String> directors = new ArrayList<String>();
+        		System.out.println("test1");
+        		while (!cur.isAfterLast())
+        		{
+        			if (year.equals(cur.getString(1)) && actor1.equals(cur.getString(3) + " " + cur.getString(4))
+        					&& !potentialDirectors.contains(cur.getString(0))) //if same year and same actor and we don't already have the director
+        			{
+        				potentialDirectors.add(cur.getString(0));
+        				System.out.println(actor1 + " " + cur.getString(0));
+        			}
+        			cur.moveToNext();
+        		}
+        		System.out.println("test2");
+        		cur.moveToFirst();
+        		while (!cur.isAfterLast())
+        		{
+        			if (!potentialDirectors.contains(cur.getString(0)) && !directors.contains(cur.getString(0)))
+        			{
+        				//System.out.println(cur.getString(0));
+        				directors.add(cur.getString(0));
+        			}
+        			cur.moveToNext();
+        		}
+        		System.out.println("test3");
+        		System.out.println(directors.size());
+        		while (getWrongAnswers)
+        		{
+        			String temp = directors.get(rand.nextInt(directors.size()));
+        			directors.remove(temp);
+        			answers.add(temp);
+        			if (answers.size() >= 4)
+        			{
+        				getWrongAnswers = false;
+        			}
+        		}
+        		System.out.println("test4");
+        		System.err.println(correctAnswer);
         		break;
             default:
             	correctAnswer = "";
