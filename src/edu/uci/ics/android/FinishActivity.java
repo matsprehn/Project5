@@ -52,7 +52,7 @@ public class FinishActivity extends Activity {
 		this.totalQuestions.setText("Total questions: " + totalQuestions);
 		
 		//calculate time per question by obtaining total seconds and total decimal seconds
-		Long totalSeconds = (long) 0;
+		Long totalSeconds = (long) NextActivity.duration / 1000;
 		Long totalDecimalSeconds = (long) 0;
 		if(getIntent().getExtras().getInt("totalQuestions") != 0){
 			Long totalMilliseconds = getIntent().getExtras().getLong("totalTime");

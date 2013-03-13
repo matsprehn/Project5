@@ -29,7 +29,7 @@ public class NextActivity  extends Activity {
 	private long mStart;
 	private long mPause = 0;
 	private boolean getWrongAnswers = true;
-	private static long duration = 180000;//180000;
+	public static long duration = 10000;//180000;
 	private Random rand = new Random();
 	private int questionNumber; // used to generate a question number 0-7 to pick what question we ask
 	long elapsed = duration;
