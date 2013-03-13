@@ -29,7 +29,7 @@ public class NextActivity  extends Activity {
 	private long mStart;
 	private long mPause = 0;
 	private boolean getWrongAnswers = true;
-	private static long duration = 180000;
+	private static long duration = 180000;//180000;
 	private Random rand = new Random();
 	private int questionNumber; // used to generate a question number 0-7 to pick what question we ask
 	long elapsed = duration;
@@ -87,7 +87,7 @@ public class NextActivity  extends Activity {
 	{
 		final TextView tv = (TextView)this.findViewById(R.id.textView1);
 		questionNumber = rand.nextInt(10); //later, make this a random number from 0-7
-		questionNumber = 2;
+		questionNumber = 6;
 		ArrayList<String>answers = new ArrayList<String>();
         tv.setText("");
         db = new DbAdapter(this);
@@ -264,6 +264,7 @@ public class NextActivity  extends Activity {
         		movie = potentialMovies.get(rand.nextInt(potentialMovies.size()));
         		question = "Who did NOT appear in the movie " + movie + "?";
         		tv.setText(question);
+        		System.out.println(movie);
         		cur2 = db.getActors(movie);
         		//System.out.println("test2");
         		while (getWrongAnswers)
@@ -348,6 +349,7 @@ public class NextActivity  extends Activity {
         		}
         		String[] splitActor = potentialActors.get(rand.nextInt(potentialActors.size())).split(";");
         		question = "Who did NOT direct the star " + splitActor[0] + " " + splitActor[1] + "?";
+        		System.out.println(splitActor[0] + " " + splitActor[1]);
         		tv.setText(question);
         		//System.out.println(splitActor[0] + " " + splitActor[1]);
         		cur2 = db.getDirectors(splitActor[0], splitActor[1]);
@@ -565,10 +567,11 @@ public class NextActivity  extends Activity {
             	correctAnswer = "";
             	break;
             	
-            	
+           
         }
 
         //give each radio button a random answer in our answer set
+        db.close();
         int radioAnswer = rand.nextInt(answers.size());
         this.radio0.setText(answers.get(radioAnswer));
         answers.remove(radioAnswer);
