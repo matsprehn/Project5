@@ -192,7 +192,7 @@ public class DbAdapter extends SQLiteOpenHelper{
 						"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
 						"join stars on stars.id = stars_in_movies.star_id " +
 						"order by stars.last_name)as a " +
-						"group by a.last_name", null);
+						"group by a.last_name, first_name", null);
 				break;
 			case 8://Which star did not appear in the same movie with the star X?
 				cur = mDb.rawQuery("select a.count, a.title, a.first_name, a.last_name from " +
