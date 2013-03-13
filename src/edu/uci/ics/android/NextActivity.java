@@ -29,7 +29,7 @@ public class NextActivity  extends Activity {
 	private long mStart;
 	private long mPause = 0;
 	private boolean getWrongAnswers = true;
-	public static long duration = 10000;//180000;
+	public static long duration = 180000;//180000;
 	private Random rand = new Random();
 	private int questionNumber; // used to generate a question number 0-7 to pick what question we ask
 	long elapsed = duration;
@@ -591,6 +591,7 @@ public class NextActivity  extends Activity {
         this.radio0.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
+				turnOffRadioButtons();
 				if (radio0.getText().equals(correctAnswer))
 				{
 					//tv.setText("Correct!");
@@ -607,6 +608,7 @@ public class NextActivity  extends Activity {
         this.radio1.setOnClickListener(new OnClickListener(){
  			@Override
  			public void onClick(View arg0) {
+ 				turnOffRadioButtons();
  				if (radio1.getText().equals(correctAnswer))
  				{
  					//tv.setText("Correct!");
@@ -624,6 +626,7 @@ public class NextActivity  extends Activity {
         this.radio2.setOnClickListener(new OnClickListener(){
  			@Override
  			public void onClick(View arg0) {
+ 				turnOffRadioButtons();
  				if (radio2.getText().equals(correctAnswer))
  				{
  					//tv.setText("Correct!");
@@ -641,6 +644,7 @@ public class NextActivity  extends Activity {
         this.radio3.setOnClickListener(new OnClickListener(){
  			@Override
  			public void onClick(View arg0) {
+ 				turnOffRadioButtons();
  				if (radio3.getText().equals(correctAnswer))
  				{
  					//tv.setText("Correct!");
@@ -795,4 +799,10 @@ public class NextActivity  extends Activity {
     	System.out.println("Restored");
     }
 
+    private void turnOffRadioButtons(){
+    	radio0.setEnabled(false);
+    	radio1.setEnabled(false);
+    	radio2.setEnabled(false);
+    	radio3.setEnabled(false);
+    }
 }
