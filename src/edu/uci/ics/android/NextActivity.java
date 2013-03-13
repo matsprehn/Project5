@@ -87,7 +87,7 @@ public class NextActivity  extends Activity {
 	{
 		final TextView tv = (TextView)this.findViewById(R.id.textView1);
 		questionNumber = rand.nextInt(10); //later, make this a random number from 0-7
-		questionNumber = 7;
+		questionNumber = 9;
 		ArrayList<String>answers = new ArrayList<String>();
         tv.setText("");
         db = new DbAdapter(this);

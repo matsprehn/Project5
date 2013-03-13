@@ -195,14 +195,17 @@ public class DbAdapter extends SQLiteOpenHelper{
 						"group by a.last_name, first_name", null);
 				break;
 			case 8://Which star did not appear in the same movie with the star X?
-				cur = mDb.rawQuery("select a.count, a.title, a.first_name, a.last_name from " +
-								"( " +
-								"select count(movies.title) as count, movies.title, stars.first_name, stars.last_name " +
-								"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
-								"join stars on stars.id = stars_in_movies.star_id " +
-								"group by movies.title " +
-								")as a " +
-								"where a.count >= 4", null);
+				cur = mDb.rawQuery(
+								"select a.count, a.title, a.first_name, a.last_name from " +
+								"(  " +
+								"select count(b.title) as count, b.title, b.first_name, b.last_name from( " +
+									"select DISTINCT movies.title, stars.first_name, stars.last_name " +
+									"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id  " +
+									"join stars on stars.id = stars_in_movies.star_id  " +
+									")as b " +
+								"group by b.title " +
+								")as a  " +
+							"where a.count >= 4 ", null);
 				// which star did not appear the same movie with the star X?
 				/*cur = mDb.rawQuery("select count(a.title),  a.first_name, a.last_name, a.title from " +
 						"(select movies.title, stars.first_name, stars.last_name " +
