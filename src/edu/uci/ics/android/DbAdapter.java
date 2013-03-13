@@ -172,7 +172,7 @@ public class DbAdapter extends SQLiteOpenHelper{
 						"group by a.title", null);
 				break;
 			case 5: // who directed the star X?
-				cur = mDb.rawQuery("select movies.director, stars.first_name, stars.last_name " +
+				cur = mDb.rawQuery("select DISTINCT movies.director, stars.first_name, stars.last_name " +
 									"from movies join stars_in_movies on movies.id = stars_in_movies.movie_id " +
 									"join stars on stars.id = stars_in_movies.star_id " , null);
 				break;
